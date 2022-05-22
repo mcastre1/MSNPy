@@ -11,6 +11,9 @@
             size_hint: .8, .8
             
             TextInput:
+                id: my_text
                 text: "Placeholder 1"
-            TextInput:
+            Button:
+                id: my_button
+                on_press: root.say_hello()  # We need to call root, and then call the function to send something.
                 text: "Placeholder 2"

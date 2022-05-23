@@ -4,6 +4,7 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.widget import Widget
 from kivy.core.window import Window
 import socket
+import threading
 
 # Infomartion needed for connecting to the server ##
 HEADER = 64
@@ -47,6 +48,9 @@ class MainScreen(Widget):
             send_length += b' ' * (HEADER - len(send_length)) # Pads message length to make sure it folows the HEADER/FORMAT of 64 in this case.
             client.send(send_length)
             client.send(message)
+
+            self.ids.my_text.text = ""
+
             print(client.recv(2048).decode(FORMAT))
         
 """

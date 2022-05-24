@@ -1,3 +1,4 @@
+from email import message
 import socket
 import threading
 
@@ -12,11 +13,11 @@ server = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # Create socket
 server.bind(ADDR) # Binding the address and port to the socket server
 
 MESSAGES = []
+CLIENTS = []
 
 # Handles communication between client and server
 def handle_client(conn, addr):
     print(f"[NEW CONNECTION] {addr} connected.")
-
     connected = True
 
     while connected:
@@ -26,16 +27,25 @@ def handle_client(conn, addr):
             msg_length = int(msg_length)
             msg = conn.recv(msg_length).decode(FORMAT)
 
-            if msg == DISCONNECT_MESSAGE:
+            if not msg == DISCONNECT_MESSAGE:
+                print(f"[{addr}] {msg}")
+                MESSAGES.append((conn, msg))
+                print(MESSAGES)
+                #conn.send("Msg received".encode(FORMAT))
+            else:
                 connected = False
-                continue
-
-            print(f"[{addr}] {msg}")
-            MESSAGES.append(f'<addr>{addr}</addr>!{msg}')
-            print(MESSAGES)
-            conn.send("Msg received".encode(FORMAT))
 
     conn.close()
+
+def send_messages():
+    while True:
+        while len(MESSAGES) > 0:
+            (conn, msg) = MESSAGES.pop()
+            print(f"{conn}, {msg}")
+            for client in CLIENTS:
+                if not client == conn:
+                    client.send(msg.encode(FORMAT))
+                
 
 # Places the server socket into the listening mode.
 def start():
@@ -43,7 +53,14 @@ def start():
     print(f"[LISTENING] Server is listening on {SERVER}")
     while True:
         conn, addr = server.accept() # This line waits for new connection and retrives info.
+        CLIENTS.append(conn)
+
+        # Thread used for receiving messages from all clients.
         thread = threading.Thread(target= handle_client, args=(conn, addr))
+        thread.start()
+
+        # Thread used for sending all received messages from clients to other clients.
+        thread = threading.Thread(target=send_messages)
         thread.start()
         print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 1}") # Show active connections
 

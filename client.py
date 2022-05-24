@@ -27,6 +27,12 @@ class MainScreen(Widget):
     def __init__(self, **kwargs):
         super(MainScreen, self).__init__(**kwargs)
         Window.bind(on_request_close=self.end_func) # Binding the close button on a window to a function (end_func)
+        self.thread = threading.Thread(target=self.receive_messages) # Thread used for receiving messages from the server.
+        self.thread.start()
+
+    def receive_messages(self):
+        while True:
+            print(client.recv(2048).decode(FORMAT))
     
     # Takes care of window close button event.
     # Will send disconnect message to server to make sure we disconnect from server properly.
@@ -51,7 +57,7 @@ class MainScreen(Widget):
 
             self.ids.my_text.text = ""
 
-            print(client.recv(2048).decode(FORMAT))
+            #print(client.recv(2048).decode(FORMAT))
         
 """
 App class for Kivy dev.

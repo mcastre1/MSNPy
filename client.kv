@@ -11,9 +11,21 @@
             size_hint: .8, .8
             
             TextInput:
+                id: text_in
+                text: ""
+                size_hint_y: None
+                height:200
+
+            TextInput:
                 id: my_text
-                text: "Placeholder 1"
+                text: ""
+                multiline: False
+                size_hint_y: None
+                height:100
+
             Button:
                 id: my_button
                 on_press: root.send_message()  # We need to call root, and then call the function to send something.
-                text: "Placeholder 2"
+                text: "Send"
+                size_hint_y: None
+                height:100

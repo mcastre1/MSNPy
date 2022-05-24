@@ -32,7 +32,8 @@ class MainScreen(Widget):
 
     def receive_messages(self):
         while True:
-            print(client.recv(2048).decode(FORMAT))
+            #print(client.recv(2048).decode(FORMAT))
+            self.ids.text_in.text = self.ids.text_in.text + client.recv(2048).decode(FORMAT)
     
     # Takes care of window close button event.
     # Will send disconnect message to server to make sure we disconnect from server properly.

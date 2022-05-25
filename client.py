@@ -5,6 +5,7 @@ from kivy.uix.widget import Widget
 from kivy.core.window import Window
 import socket
 import threading
+from kivy.clock import mainthread
 
 # Infomartion needed for connecting to the server ##
 HEADER = 64
@@ -30,11 +31,18 @@ class MainScreen(Widget):
         self.thread = threading.Thread(target=self.receive_messages) # Thread used for receiving messages from the server.
         self.thread.start()
 
+    @mainthread  # We need to tell the code that this function will live inside the main kivy thread to be able to update graphic attributes.
+    def update_text_in(self, msg):
+        self.ids.text_in.text += f'{msg}\n'
+
     def receive_messages(self):
         while True:
             #print(client.recv(2048).decode(FORMAT))
-            self.ids.text_in.text = self.ids.text_in.text + client.recv(2048).decode(FORMAT)
-    
+            #self.ids.text_in.text = self.ids.text_in.text + client.recv(2048).decode(FORMAT)
+            msg = client.recv(2045).decode(FORMAT)
+            if msg:
+                self.update_text_in(msg)
+            
     # Takes care of window close button event.
     # Will send disconnect message to server to make sure we disconnect from server properly.
     def end_func(self, *args):

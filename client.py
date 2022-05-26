@@ -37,11 +37,9 @@ class MainScreen(Widget):
 
     def receive_messages(self):
         while True:
-            #print(client.recv(2048).decode(FORMAT))
-            #self.ids.text_in.text = self.ids.text_in.text + client.recv(2048).decode(FORMAT)
-            msg = client.recv(2045).decode(FORMAT)
-            if msg:
-                self.update_text_in(msg)
+            msg = client.recv(2048).decode(FORMAT)
+
+            self.update_text_in(msg)
             
     # Takes care of window close button event.
     # Will send disconnect message to server to make sure we disconnect from server properly.
@@ -56,7 +54,7 @@ class MainScreen(Widget):
 
     # Sends message to server.
     def send(self,msg):
-        if self.ids.my_text.text:
+        if msg:
             message = msg.encode(FORMAT) # Encode into byte format first.
             msg_length = len(msg)
             send_length = str(msg_length).encode('utf-8')
@@ -65,8 +63,6 @@ class MainScreen(Widget):
             client.send(message)
 
             self.ids.my_text.text = ""
-
-            #print(client.recv(2048).decode(FORMAT))
         
 """
 App class for Kivy dev.

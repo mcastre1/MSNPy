@@ -31,7 +31,6 @@ def handle_client(conn, addr):
                 print(f"[{addr}] {msg}")
                 MESSAGES.append((conn, msg))
                 print(MESSAGES)
-                #conn.send("Msg received".encode(FORMAT))
             else:
                 connected = False
 
@@ -41,7 +40,7 @@ def send_messages():
     while True:
         while len(MESSAGES) > 0:
             (conn, msg) = MESSAGES.pop()
-            print(f"{conn}, {msg}")
+            #print(f"{conn}, {msg}")
             for client in CLIENTS:
                 if not client == conn:
                     client.send(msg.encode(FORMAT))
